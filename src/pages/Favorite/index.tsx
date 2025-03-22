@@ -1,10 +1,10 @@
-import { useGetFavoriteQuery, useDeleteFavoriteQuery } from '@/hooks/query/useFavorite';
+import { useGetFavoriteQuery, useDeleteFavoriteMutation } from '@/hooks/query/useFavorite';
 import PosterImage from '@/components/PosterImage';
 import { useAuth } from '@/context/AuthContext';
 
 const Favorite = () => {
   const favorites = useGetFavoriteQuery();
-  const deleteCommnet = useDeleteFavoriteQuery();
+  const deleteCommnet = useDeleteFavoriteMutation();
 
   const getUser = useAuth();
   const userId = getUser.session?.user.id;

@@ -4,7 +4,11 @@ import { TMDB_LANGUAGE_KR } from '@/contants';
 import { getImageUrl } from '@/utils/tmdbUtils';
 import clsx from 'clsx';
 import { useAuth } from '@/context/AuthContext';
-import { useAddFavoriteQuery, useGetFavoriteByMovieQuery, useDeleteFavoriteQuery } from '@/hooks/query/useFavorite';
+import {
+  useAddFavoriteMutation,
+  useGetFavoriteByMovieQuery,
+  useDeleteFavoriteMutation,
+} from '@/hooks/query/useFavorite';
 
 const DetailHeader = ({ movieId }: { movieId: number }) => {
   const movieInfo = useGetDetailMovieQuery(movieId, { language: TMDB_LANGUAGE_KR });
@@ -12,8 +16,8 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
   const getUser = useAuth();
   const userId = getUser.session?.user.id;
 
-  const addFavorite = useAddFavoriteQuery();
-  const deleteCommnet = useDeleteFavoriteQuery();
+  const addFavorite = useAddFavoriteMutation();
+  const deleteCommnet = useDeleteFavoriteMutation();
 
   const { data: favorites } = useGetFavoriteByMovieQuery(movieId!, userId!);
   const isFavoriteAdded = !!favorites?.length;

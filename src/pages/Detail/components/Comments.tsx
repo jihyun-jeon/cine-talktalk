@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useAddComment, useDeleteComment, useGetCommentsQuery } from '@/hooks/query/useComment';
+import { useAddCommentMutation, useDeleteCommentMutation, useGetCommentsQuery } from '@/hooks/query/useComment';
 import { useAuth } from '@/context/AuthContext';
 
 const Comments = ({ movieId }: { movieId: number }) => {
@@ -12,8 +12,8 @@ const Comments = ({ movieId }: { movieId: number }) => {
 
   const comments = useGetCommentsQuery(movieId);
 
-  const addCommnet = useAddComment(movieId);
-  const deleteCommnet = useDeleteComment(movieId);
+  const addCommnet = useAddCommentMutation(movieId);
+  const deleteCommnet = useDeleteCommentMutation(movieId);
 
   const handleSubmitComment = () => {
     if (!userId || !userEmail) {
