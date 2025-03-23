@@ -1,5 +1,6 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient, UseMutationOptions } from '@tanstack/react-query';
 import { addFavorite, deleteFavorite, fetchFavorites, fetchFavoritesByMovie } from '@/api/favorite';
+import { FavoriteData, FavoriteSearchParams } from '@/types/favorite';
 
 /** 즐겨찾기 조회  */
 export const useGetFavoriteQuery = () =>
@@ -17,33 +18,37 @@ export const useGetFavoriteByMovieQuery = (movieId: number, userId: string) =>
   });
 
 /** 즐겨찾기 추가 */
-export const useAddFavoriteQuery = () => {
+export const useAddFavoriteMutation = (options?: UseMutationOptions<null, Error, FavoriteData>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: addFavorite,
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       alert('찜 추가 완료!');
       queryClient.invalidateQueries({ queryKey: FavoriteQuery.all });
+      options?.onSuccess?.(data, variables, context);
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
       console.error('error', error);
+      options?.onError?.(error, variables, context);
     },
   });
 };
 
 /** 즐겨찾기 삭제  */
-export const useDeleteFavoriteQuery = () => {
+export const useDeleteFavoriteMutation = (options?: UseMutationOptions<null, Error, FavoriteSearchParams>) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: deleteFavorite,
-    onSuccess: () => {
+    onSuccess: (data, variables, context) => {
       alert('찜 삭제 완료!');
       queryClient.invalidateQueries({ queryKey: FavoriteQuery.all });
+      options?.onSuccess?.(data, variables, context);
     },
-    onError: (error) => {
+    onError: (error, variables, context) => {
       console.error('error', error);
+      options?.onError?.(error, variables, context);
     },
   });
 };
