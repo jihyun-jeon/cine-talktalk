@@ -1,4 +1,4 @@
-import NotFound from '@/pages/NotFound';
+import ErrorPage from '@/pages/Error';
 import React from 'react';
 
 interface Props {
@@ -10,7 +10,7 @@ interface State {
   error: Error | null;
 }
 
-class ErrorBoundary extends React.Component<Props, State> {
+class AuthErrorBoundary extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -25,7 +25,7 @@ class ErrorBoundary extends React.Component<Props, State> {
       return (
         <>
           <h1>Something went wrong</h1>
-          <NotFound errorMessage={'예상치 못한 오류가 발생했어요'} />
+          <ErrorPage />
         </>
       );
     }
@@ -33,6 +33,6 @@ class ErrorBoundary extends React.Component<Props, State> {
   }
 }
 
-export default ErrorBoundary;
+export default AuthErrorBoundary;
 
 // supabase 오류 처리

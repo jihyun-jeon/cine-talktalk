@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode, Suspense, useState, useEffect, use } from 'react';
+import { createContext, useContext, ReactNode, useState, useEffect, use } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import type {
   SignUpWithPasswordCredentials,
@@ -7,8 +7,6 @@ import type {
   Session,
   AuthResponse,
 } from '@supabase/supabase-js';
-import SpinnerPortal from '@/components/Spinner';
-import ErrorBoundary from '@/context/ErrorBoundary';
 
 function fetchSession() {
   return supabase.auth.getSession().then(({ data, error }) => {
@@ -65,13 +63,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-export const AuthContextProvider = ({ children }: { children: ReactNode }) => (
-  <ErrorBoundary>
-    <Suspense fallback={<SpinnerPortal />}>
-      <AuthProvider>{children}</AuthProvider>
-    </Suspense>
-  </ErrorBoundary>
-);
+export const AuthContextProvider = ({ children }: { children: ReactNode }) => <AuthProvider>{children}</AuthProvider>;
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
