@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode, useEffect, Suspense } from 'react';
+import { createContext, useContext, ReactNode, Suspense, useState, useEffect, use } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import type {
   SignUpWithPasswordCredentials,
@@ -8,6 +8,15 @@ import type {
   AuthResponse,
 } from '@supabase/supabase-js';
 import SpinnerPortal from '@/components/Spinner';
+import ErrorBoundary from '@/context/ErrorBoundary';
+
+function fetchSession() {
+  return supabase.auth.getSession().then(({ data, error }) => {
+    // error : supabase 오류 / 인증 없으면  data.session = null
+    if (error) throw new Error('supabase error');
+    return data.session;
+  });
+}
 
 type AuthContextType = {
   session: Session | null;
@@ -16,24 +25,14 @@ type AuthContextType = {
   signUp: (credentials: SignInWithPasswordCredentials) => Promise<AuthResponse['data']>;
 };
 
+const sessionPromise = fetchSession();
+
 const AuthContext = createContext<AuthContextType | null>(null);
 
-const sessionPromiseRef = { current: null as Promise<void> | null };
-
 function AuthProvider({ children }: { children: ReactNode }) {
-  const [session, setSession] = useState<Session | null>(null);
-
-  // 1)첫 번째 마운트시, 2)새로고침해서 null로 초기화시
-  if (!sessionPromiseRef.current) {
-    sessionPromiseRef.current = supabase.auth.getSession().then(({ data }) => {
-      const session = data.session;
-      setSession(session);
-    });
-    throw sessionPromiseRef.current; // Promise를 저장하여 반환 -> 비동기 처리중 -> Suspense가 이를 감지하여 로딩 UI 출력
-  }
+  const [session, setSession] = useState<Session | null>(use(sessionPromise));
 
   useEffect(() => {
-    // 세션이 변경시 때마다(로그인, 로그아웃, 세션 만료 등) - 세션 상태 자동 업데이트
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
@@ -67,9 +66,11 @@ function AuthProvider({ children }: { children: ReactNode }) {
 }
 
 export const AuthContextProvider = ({ children }: { children: ReactNode }) => (
-  <Suspense fallback={<SpinnerPortal />}>
-    <AuthProvider>{children}</AuthProvider>
-  </Suspense>
+  <ErrorBoundary>
+    <Suspense fallback={<SpinnerPortal />}>
+      <AuthProvider>{children}</AuthProvider>
+    </Suspense>
+  </ErrorBoundary>
 );
 
 export const useAuth = () => {
