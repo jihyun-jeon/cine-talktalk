@@ -12,6 +12,7 @@ import Favorite from '@/pages/Favorite';
 import SpinnerPortal from '@/components/Spinner';
 import AuthErrorBoundary from '@/context/AuthErrorBoundary';
 import ErrorPage from '@/pages/Error';
+import CommonError from '@/interceptor/CommonError';
 
 const GuardRouter = ({ children }: { children: React.ReactNode }) => {
   const { session } = useAuth();
@@ -21,7 +22,12 @@ const GuardRouter = ({ children }: { children: React.ReactNode }) => {
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Layout />,
+    element: (
+      <>
+        <CommonError />
+        <Layout />
+      </>
+    ),
     children: [
       { index: true, element: <Navigate to="/movie" replace /> },
       { path: 'movie', element: <Home /> },
