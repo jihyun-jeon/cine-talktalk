@@ -15,6 +15,7 @@ export const usePopularMoviesQuery = (queryParams: baseSearchParam) =>
   useQuery({
     queryFn: () => fetchPopularMovies(queryParams),
     queryKey: MoviesQuery.getMany('getPopular', queryParams),
+    throwOnError: true, // 이 쿼리에서만 에러를 throw
   });
 
 /** 트렌딩 영화 요청 */
@@ -22,6 +23,7 @@ export const useTrendingMoviesQuery = (queryParams: baseSearchParam) =>
   useQuery({
     queryFn: () => fetchTrendingMovies(queryParams),
     queryKey: MoviesQuery.getMany('getTrending', queryParams),
+    throwOnError: true,
   });
 
 /** 장르 목록 요청 */
