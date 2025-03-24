@@ -61,6 +61,7 @@ export const useGetDetailMovieQuery = (movieId: number, queryParams: baseSearchP
   useQuery({
     queryFn: () => fetchMovieDetail(movieId, queryParams),
     queryKey: MoviesQuery.getOne(movieId),
+    throwOnError: true,
   });
 
 export const MoviesQuery = {
