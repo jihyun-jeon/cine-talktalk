@@ -4,7 +4,11 @@ import { withSupabaseHandler } from '@/api/utils';
 
 /**  영화 댓글 조회  */
 export const fetchComments = (movieId: number) =>
-  withSupabaseHandler(supabase.from('Comments').select('*').eq('movie_id', movieId));
+  withSupabaseHandler(
+    supabase.from('Comments').select('*').eq('movie_id', movieId).order('created_at', {
+      ascending: true,
+    }),
+  );
 
 /** 영화 댓글 추가 */
 export const addComment = (commentData: Comment) =>

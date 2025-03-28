@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAddCommentMutation, useDeleteCommentMutation, useGetCommentsQuery } from '@/hooks/query/useComment';
 import { useAuth } from '@/context/AuthContext';
+import { supabase } from '@/lib/supabaseClient';
 
 const Comments = ({ movieId }: { movieId: number }) => {
   const initialCommentState = { review: '', vote: 0 };
@@ -65,6 +66,34 @@ const Comments = ({ movieId }: { movieId: number }) => {
   const handleVoteChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment((prevState) => ({ ...prevState, vote: Number(e.target.value) }));
   };
+
+  useEffect(() => {
+    // 실시간 구독 설정
+    const channel = supabase
+      .channel(`comments-${movieId}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'Comments',
+          filter: `movie_id=eq.${movieId}`,
+        },
+        () => {
+          comments.refetch(); // 실시간 업데이트 시 React Query 캐시 갱신
+        },
+      )
+      .subscribe((status) => {
+        if (status === 'SUBSCRIBED') {
+          console.log('Subscribed to comments channel');
+        }
+      });
+
+    return () => {
+      channel.unsubscribe();
+    };
+  }, [movieId]);
+
   return (
     <div>
       Comments
