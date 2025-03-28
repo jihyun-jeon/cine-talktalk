@@ -13,7 +13,7 @@ export const useGetFavoriteQuery = () =>
 export const useGetFavoriteByMovieQuery = (movieId: number, userId: string) =>
   useQuery({
     queryFn: () => fetchFavoritesByMovie({ movieId, userId }),
-    queryKey: FavoriteQuery.all,
+    queryKey: FavoriteQuery.getOne(movieId),
     enabled: !!movieId && !!userId,
   });
 
@@ -54,5 +54,6 @@ export const useDeleteFavoriteMutation = (options?: UseMutationOptions<null, Err
 };
 
 export const FavoriteQuery = {
-  all: ['favorite'],
+  all: ['favorite'] as const,
+  getOne: (movieId: number) => [...FavoriteQuery.all, 'getOne', movieId] as const,
 };
