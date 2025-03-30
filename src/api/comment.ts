@@ -15,5 +15,5 @@ export const addComment = (commentData: Comment) =>
   withSupabaseHandler(supabase.from('Comments').insert([commentData]));
 
 /**  영화 댓글 삭제  */
-export const deleteComment = ({ movieId, userId }: DeleteCommentParams) =>
-  withSupabaseHandler(supabase.from('Comments').delete().eq('movie_id', movieId).eq('user_id', userId));
+export const deleteComment = ({ userId, commentId }: DeleteCommentParams) =>
+  withSupabaseHandler(supabase.from('Comments').delete().eq('id', commentId).eq('user_id', userId));

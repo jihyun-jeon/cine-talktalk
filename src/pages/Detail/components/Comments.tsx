@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useAddCommentMutation, useDeleteCommentMutation, useGetCommentsQuery } from '@/hooks/query/useComment';
 import { useAuth } from '@/context/AuthContext';
 import { supabase } from '@/lib/supabaseClient';
+import clsx from 'clsx';
 
 const Comments = ({ movieId }: { movieId: number }) => {
   const initialCommentState = { review: '', vote: 0 };
@@ -41,13 +42,13 @@ const Comments = ({ movieId }: { movieId: number }) => {
     setComment(initialCommentState);
   };
 
-  const handleDeleteComment = () => {
-    if (!userId) {
-      console.log('userId undefined!');
-      return;
-    }
+  const handleDeleteComment = (commentId: number) => {
+    if (!userId) return;
 
-    const deleteData = { userId, movieId };
+    const isConfirmed = confirm('메시지를 삭제하시겠습니까?');
+    if (!isConfirmed) return;
+
+    const deleteData = { userId, commentId };
     deleteCommnet.mutate(deleteData, {
       onSuccess: (data) => {
         // 추가적인 성공 처리
@@ -96,39 +97,43 @@ const Comments = ({ movieId }: { movieId: number }) => {
 
   return (
     <div>
-      Comments
-      {/* [TODO] UI 개선 */}
-      <div className="flex">
-        <label htmlFor="vote">평점 </label>
-        <input
-          type="number"
-          id="vote"
-          min={0}
-          max={10}
-          value={comment.vote}
-          onChange={handleVoteChange}
-          className=" text-black"
-        />
-        <label htmlFor="review">의견 </label>
-        <textarea id="review" value={comment.review} onChange={handleReviewChange} className=" text-black" />
-        <button type="button" onClick={handleSubmitComment} className="border px-2">
-          등록
-        </button>
-
-        <button type="button" onClick={handleDeleteComment} className="border px-2">
-          삭제
-        </button>
-      </div>
-      <ul>
+      <ul className="min-h-[400px] border p-3">
         {comments.data?.map((comment) => (
-          <li key={comment.id} className="border">
-            <div>{comment.user_name}</div>
-            <div>
-              평점 : {comment.vote} / 리뷰 : {comment.review}
+          <li
+            key={comment.id}
+            className={clsx('mb-4 max-w-[80%] rounded-[20px] px-4 py-3 relative', {
+              'ml-auto bg-gray-400 text-white': comment.user_name === userEmail,
+              'bg-gray-100 text-gray-900': comment.user_name !== userEmail,
+            })}
+          >
+            <div
+              className={clsx('mb-1 text-sm', {
+                'text-gray-200': comment.user_name === userEmail,
+                'text-gray-600': comment.user_name !== userEmail,
+              })}
+            >
+              {comment.user_name}
             </div>
+            <div className="text-base">{comment.review}</div>
+            {comment.user_name === userEmail && (
+              <button
+                type="button"
+                onClick={() => handleDeleteComment(comment.id)}
+                className=" absolute right-[-5px] top-[-5px] bg-gray-600 rounded-[50%] w-4 h-4 text-xs flex items-center justify-center"
+              >
+                x
+              </button>
+            )}
           </li>
         ))}
       </ul>
+      {/* 폼 */}
+      <div className="flex">
+        <textarea id="review" value={comment.review} onChange={handleReviewChange} className=" text-black" />
+        <button type="button" onClick={handleSubmitComment} className="border px-2">
+          보내기
+        </button>
+      </div>
     </div>
   );
 };
