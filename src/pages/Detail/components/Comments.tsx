@@ -95,13 +95,15 @@ const Comments = ({ movieId }: { movieId: number }) => {
     };
   }, [movieId]);
 
+  const hasReview = !!comment.review.length;
+
   return (
     <div>
       <ul className="min-h-[400px] border p-3">
         {comments.data?.map((comment) => (
           <li
             key={comment.id}
-            className={clsx('mb-4 max-w-[80%] rounded-[20px] px-4 py-3 relative', {
+            className={clsx('mb-4 max-w-[80%] rounded-[20px] px-4 py-3 relative group', {
               'ml-auto bg-gray-400 text-white': comment.user_name === userEmail,
               'bg-gray-100 text-gray-900': comment.user_name !== userEmail,
             })}
@@ -119,7 +121,7 @@ const Comments = ({ movieId }: { movieId: number }) => {
               <button
                 type="button"
                 onClick={() => handleDeleteComment(comment.id)}
-                className=" absolute right-[-5px] top-[-5px] bg-gray-600 rounded-[50%] w-4 h-4 text-xs flex items-center justify-center"
+                className="absolute right-[-5px] top-[-5px] bg-gray-500 group-hover:bg-white rounded-[50%] w-4 h-4 text-xs flex items-center justify-center transition-colors group-hover:text-gray-600"
               >
                 x
               </button>
@@ -128,9 +130,24 @@ const Comments = ({ movieId }: { movieId: number }) => {
         ))}
       </ul>
       {/* 폼 */}
-      <div className="flex">
-        <textarea id="review" value={comment.review} onChange={handleReviewChange} className=" text-black" />
-        <button type="button" onClick={handleSubmitComment} className="border px-2">
+      <div className="flex gap-2 mt-4">
+        <textarea
+          id="review"
+          value={comment.review}
+          onChange={handleReviewChange}
+          placeholder="대화에 참여해보세요."
+          className="flex-1 p-1 text-black border rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows={1}
+        />
+        <button
+          type="button"
+          onClick={handleSubmitComment}
+          disabled={!hasReview}
+          className={clsx('px-4 py-2 text-white rounded-lg transition-colors duration-200 h-fit', {
+            'bg-blue-500 hover:bg-blue-600': hasReview,
+            'bg-gray-400 cursor-not-allowed': !hasReview,
+          })}
+        >
           보내기
         </button>
       </div>
