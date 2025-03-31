@@ -103,6 +103,9 @@ devDependencies:
   '@simbathesailor/use-what-changed':
     specifier: ^2.0.0
     version: 2.0.0(react@19.0.0)
+  '@tosspayments/tosspayments-sdk':
+    specifier: ^2.3.4
+    version: 2.3.4
   '@types/react':
     specifier: ^19.0.10
     version: 19.0.10
@@ -2374,6 +2377,10 @@ packages:
   /@tootallnate/once@2.0.0:
     resolution: {integrity: sha512-XCuKFP5PS55gnMVu3dty8KPatLqUoy/ZYzDzAGCQ8JNFCkLXzmI7vNHCR+XpbZaMWQK/vQubr7PkYq8g470J/A==}
     engines: {node: '>= 10'}
+    dev: true
+
+  /@tosspayments/tosspayments-sdk@2.3.4:
+    resolution: {integrity: sha512-YypRXqS+9XtQew5TQBa21Ww8Z7QH+fOkuedfH/BaomsCqBv3qS4wMNCSYrq8pxQ7NBOOuPDw0DLvY7Bg5FWNmQ==}
     dev: true
 
   /@tufjs/canonical-json@1.0.0:

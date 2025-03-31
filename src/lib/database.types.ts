@@ -60,6 +60,36 @@ export type Database = {
         };
         Relationships: [];
       };
+      Pay: {
+        Row: {
+          created_at: string;
+          id: number;
+          img_url: string | null;
+          movie_id: number | null;
+          price: number;
+          title: string | null;
+          user_id: string | null;
+        };
+        Insert: {
+          created_at?: string;
+          id?: number;
+          img_url?: string | null;
+          movie_id?: number | null;
+          price: number;
+          title?: string | null;
+          user_id?: string | null;
+        };
+        Update: {
+          created_at?: string;
+          id?: number;
+          img_url?: string | null;
+          movie_id?: number | null;
+          price?: number;
+          title?: string | null;
+          user_id?: string | null;
+        };
+        Relationships: [];
+      };
       Todos: {
         Row: {
           content: string | null;
