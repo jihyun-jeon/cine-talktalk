@@ -58,6 +58,11 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
     return window.open(`/payment/checkout?${params}`, '_blank', 'width=770,height=730');
   };
 
+  const goToWatchPage = (videoId: string) => {
+    if (!videoId) return;
+    return goTo('/watch/:movieId', { movieId }, { play: videoId });
+  };
+
   useEffect(() => {
     const channel = new BroadcastChannel('payment_success');
 
@@ -141,7 +146,7 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
 
           <div>
             {videoId && (
-              <button type="button" onClick={() => goTo('/watch/:movieId', { movieId }, { play: videoId })}>
+              <button type="button" onClick={() => goToWatchPage(videoId)}>
                 ▶️ 미리보기
               </button>
             )}
@@ -150,17 +155,21 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
           {renderMovieInfo()}
           <p>{movieInfo?.overview}</p>
 
-          <div className="flex justify-between">
-            <button type="button" className="bg-red-500 px-4 py-0 mt-5 rounded-sm" onClick={handlePayment}>
+          <div className="flex justify-between items-center">
+            <button
+              type="button"
+              className="bg-red-500 hover:bg-red-600 px-6 py-2 mt-5 rounded-md transition-colors"
+              onClick={isPurchased ? () => goToWatchPage(videoId!) : handlePayment}
+            >
               {isPurchased ? (
-                <div className="flex align-middle gap-1">
+                <div className="flex items-center gap-2">
                   <Play fill="white" />
-                  감상하기
+                  <span className="font-medium">감상하기</span>
                 </div>
               ) : (
-                <div className="flex align-middle gap-1">
+                <div className="flex items-center gap-2">
                   <MonitorPlay />
-                  구매하기
+                  <span className="font-medium">구매하기</span>
                 </div>
               )}
             </button>
