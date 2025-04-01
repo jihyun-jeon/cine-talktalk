@@ -99,7 +99,7 @@ const Watch = () => {
 
       {/* 북마크 목록 */}
       {showBookmarks && (
-        <div className="absolute top-16 right-4 bg-gray-800 p-4 rounded-lg w-48 max-h-[80%] overflow-y-auto">
+        <div className="absolute top-16 right-4 bg-gray-800 p-4 rounded-lg w-48 max-h-[80%] overflow-y-auto z-10">
           <h3 className="text-white mb-2">북마크 목록</h3>
           <div className="space-y-2">
             {bookmarks.map((time, index) => (
