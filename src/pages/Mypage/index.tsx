@@ -1,57 +1,66 @@
 import PosterImage from '@/components/PosterImage';
+import { useAuth } from '@/context/AuthContext';
+import { useGetAllPayQuery } from '@/hooks/query/usePay';
+import { MoviePurchase } from '@/types/pay';
+import { formatDate, formatDateToDayString } from '@/utils';
+import { UserRound } from 'lucide-react';
 
-const PurchaseHistory = () => (
-  <div className="flex border-b mx-2 pb-4 pr-6">
-    <div className="relative h-full max-w-[50px] flex mr-10">
-      <PosterImage posterPath={'https://image.tmdb.org/t/p/w342/2fXrKKgTo0gjEAEdjEdhekX4qxl.jpg'} size="w500" />
+const PurchaseHistory = ({ payInfo }: { payInfo: MoviePurchase }) => (
+  <div className="flex border-b mx-2 pb-4  ">
+    <div className="relative h-full max-w-[50px] flex mx-2">
+      <PosterImage posterPath={payInfo.img_url} size="w500" />
     </div>
-    <div className="flex flex-col justify-between w-full">
-      <div className="flex justify-between">
-        <h3 className="font-medium">라이프 리스트</h3>
-        <p className="text-gray-600">구매일: 2024-03-20</p>
-      </div>
+    <div className="flex  justify-between w-full  pr-2">
+      <h3 className="font-medium">{payInfo.title}</h3>
+
       <div>
-        <span className="text-green-600">₩15,000</span>
+        <p className="text-gray-500">구매일: {formatDate(payInfo.created_at)}</p>
+        <p className="text-green-600 text-right">₩{payInfo.price}</p>
       </div>
     </div>
   </div>
 );
 
 function MyPage() {
+  const { session } = useAuth();
+
+  const userId = session?.user.id;
+
+  const { data: payments } = useGetAllPayQuery(userId!);
+
   return (
-    <div className="flex flex-col items-center p-8">
-      <div className="w-full max-w-2xl space-y-6">
-        <div className="bg-gray-900 rounded-lg shadow-md p-6">
+    <main className="container mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <section className="bg-gray-900 rounded-lg shadow-md p-6">
           <h2 className="text-xl font-bold mb-4">프로필 정보</h2>
           <div className="space-y-4">
-            <div className="flex items-center space-x-4">
-              <div className="w-20 h-20 bg-gray-200 rounded-full" />
-              <div>
-                <h3 className="font-semibold">사용자 이름</h3>
-                <p className="text-gray-600">user@example.com</p>
-              </div>
-            </div>
-            <div className="border-t pt-4 flex justify-between gap-4">
-              <button className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">프로필 수정</button>
-              <button className="text-red-800 px-4 py-2">탈퇴하기</button>
-            </div>
-          </div>
-        </div>
+            <div className="flex items-center justify-between space-x-4">
+              <div className="flex items-center space-x-4">
+                <div className="w-20 h-20 p-2 bg-gray-200 rounded-full">
+                  <UserRound className="w-full h-full text-gray-500 " />
+                </div>
 
-        <div className="bg-gray-900 rounded-lg shadow-md p-6 h-[400px] flex flex-col">
-          <h2 className="text-xl font-bold mb-4">내 구매 내역</h2>
-          <div className="space-y-4 overflow-y-auto custom-scrollbar">
-            <PurchaseHistory />
-            <PurchaseHistory />
-            <PurchaseHistory />
-            <PurchaseHistory />
-            <PurchaseHistory />
-            <PurchaseHistory />
-            <PurchaseHistory />
+                <div>
+                  <h3 className="font-semibold">{session?.user.email}</h3>
+                  <p className="font-semibold text-gray-400">
+                    가입일 : {session && <span>{formatDateToDayString(session?.user.created_at)}</span>}
+                  </p>
+                </div>
+              </div>
+
+              <button className="text-blue-500  px-3 py-2 rounded">비밀번호 변경</button>
+            </div>
           </div>
-        </div>
+        </section>
+
+        <section className="bg-gray-900 rounded-lg shadow-md p-6">
+          <h2 className="text-xl font-bold mb-4">내 구매 내역</h2>
+          <div className="min-h-[100px] max-h-[400px] space-y-4 overflow-y-auto custom-scrollbar">
+            {payments?.map((payInfo) => <PurchaseHistory key={payInfo.id} payInfo={payInfo as MoviePurchase} />)}
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }
 
