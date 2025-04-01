@@ -1,3 +1,4 @@
+import PasswordUpdateForm from '@/components/\bPasswordUpdateForm';
 import PosterImage from '@/components/PosterImage';
 import { useAuth } from '@/context/AuthContext';
 import { useGetAllPayQuery } from '@/hooks/query/usePay';
@@ -22,7 +23,7 @@ const PurchaseHistory = ({ payInfo }: { payInfo: MoviePurchase }) => (
 );
 
 function MyPage() {
-  const { session } = useAuth();
+  const { session, updateUser } = useAuth();
 
   const userId = session?.user.id;
 
@@ -60,6 +61,8 @@ function MyPage() {
           </div>
         </section>
       </div>
+      {/* [TODO] UI개선*/}
+      <PasswordUpdateForm onSubmitFn={updateUser} />
     </main>
   );
 }
