@@ -1,7 +1,7 @@
-import PasswordUpdateForm from '@/components/\bPasswordUpdateForm';
 import PosterImage from '@/components/PosterImage';
 import { useAuth } from '@/context/AuthContext';
 import { useGetAllPayQuery } from '@/hooks/query/usePay';
+import useNavigateTo from '@/hooks/routing/useUrlNavigation';
 import { MoviePurchase } from '@/types/pay';
 import { formatDate, formatDateToDayString } from '@/utils';
 import { UserRound } from 'lucide-react';
@@ -23,10 +23,10 @@ const PurchaseHistory = ({ payInfo }: { payInfo: MoviePurchase }) => (
 );
 
 function MyPage() {
-  const { session, updateUser } = useAuth();
-
+  const { session } = useAuth();
   const userId = session?.user.id;
 
+  const goTo = useNavigateTo();
   const { data: payments } = useGetAllPayQuery(userId!);
 
   return (
@@ -49,7 +49,9 @@ function MyPage() {
                 </div>
               </div>
 
-              <button className="text-blue-500  px-3 py-2 rounded">비밀번호 변경</button>
+              <button onClick={() => goTo('/update-profile')} className="text-blue-500  px-3 py-2 rounded">
+                비밀번호 변경
+              </button>
             </div>
           </div>
         </section>
@@ -61,8 +63,6 @@ function MyPage() {
           </div>
         </section>
       </div>
-      {/* [TODO] UI개선*/}
-      <PasswordUpdateForm onSubmitFn={updateUser} />
     </main>
   );
 }
