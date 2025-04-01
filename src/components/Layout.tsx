@@ -41,6 +41,14 @@ const Layout = () => {
                   >
                     찜목록
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigate('/mypage');
+                    }}
+                  >
+                    마이페이지
+                  </button>
                 </>
               ) : (
                 <>

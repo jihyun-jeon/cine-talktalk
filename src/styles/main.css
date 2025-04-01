@@ -6,3 +6,23 @@
 body {
   @apply bg-black text-white;
 }
+
+@layer utilities {
+  /* 전체 스크롤바 스타일 */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  /* 스크롤바 트랙 (배경) */
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1e293b; /* 다크모드 계열 색상 */
+    border-radius: 4px;
+  }
+
+  /* 스크롤바 핸들  */
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888888;
+    border-radius: 4px;
+  }
+}

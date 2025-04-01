@@ -14,6 +14,7 @@ import CommonError from '@/interceptor/CommonError';
 import Watch from '@/pages/Watch';
 import CheckoutPage from '@/pages/Pay/Checkout';
 import SuccessPage from '@/pages/Pay/Success';
+import MyPage from '@/pages/Mypage';
 
 /** 인증된 사용자만 접근 가능한 가드 */
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
@@ -42,6 +43,7 @@ export const router = createBrowserRouter([
       { path: 'movie/:movieId', element: <Detail /> },
       { path: 'search', element: <Search /> },
       { path: 'favorite', element: <Favorite /> },
+      { path: 'mypage', element: <MyPage /> },
       {
         path: 'watch/:movieId',
         element: (
