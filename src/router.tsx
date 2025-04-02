@@ -12,6 +12,8 @@ import Favorite from '@/pages/Favorite';
 import ErrorPage from '@/pages/Error';
 import CommonError from '@/interceptor/CommonError';
 import Watch from '@/pages/Watch';
+import CheckoutPage from '@/pages/Pay/Checkout';
+import SuccessPage from '@/pages/Pay/Success';
 
 /** 인증된 사용자만 접근 가능한 가드 */
 const RequireAuth = ({ children }: { children: React.ReactNode }) => {
@@ -67,5 +69,23 @@ export const router = createBrowserRouter([
       { path: 'error', element: <ErrorPage /> },
     ],
   },
+  {
+    path: 'payment',
+    children: [
+      {
+        index: true,
+        element: <Navigate to="/payment/checkout" replace />,
+      },
+      {
+        path: 'checkout',
+        element: <CheckoutPage />,
+      },
+      {
+        path: 'success',
+        element: <SuccessPage />,
+      },
+    ],
+  },
+
   { path: '*', element: <NotFound /> },
 ]);
