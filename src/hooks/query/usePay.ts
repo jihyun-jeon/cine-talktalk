@@ -1,4 +1,4 @@
-import { addPayment, fetchPayment } from '@/api/pay';
+import { addPayment, fetchAllPayment, fetchPayment } from '@/api/pay';
 import { AddPaymentData } from '@/types/pay';
 import { useMutation, UseMutationOptions, useQuery } from '@tanstack/react-query';
 
@@ -8,6 +8,14 @@ export const useGetPayQuery = (userId: string, movieId: number) =>
     enabled: !!userId && !!movieId,
     queryFn: () => fetchPayment({ userId, movieId }),
     queryKey: PaymentQuery.getOne(movieId),
+  });
+
+/** 결제 이력 조회  */
+export const useGetAllPayQuery = (userId: string) =>
+  useQuery({
+    enabled: !!userId,
+    queryFn: () => fetchAllPayment({ userId }),
+    queryKey: PaymentQuery.getMany(userId),
   });
 
 /** 결제 추가  */
@@ -24,5 +32,6 @@ export const usePostPayMutation = (options?: UseMutationOptions<null, Error, Add
 
 export const PaymentQuery = {
   all: ['payment'] as const,
+  getMany: (userId: string) => [...PaymentQuery.all, 'getMany', userId] as const,
   getOne: (movieId: number) => [...PaymentQuery.all, 'getOne', movieId] as const,
 };

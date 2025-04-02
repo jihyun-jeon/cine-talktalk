@@ -6,6 +6,10 @@ import { AddPaymentData } from '@/types/pay';
 export const fetchPayment = ({ userId, movieId }: { userId: string; movieId: number }) =>
   withSupabaseHandler(supabase.from('Pay').select('*').eq('user_id', userId).eq('movie_id', movieId));
 
+// 결제 이력 조회
+export const fetchAllPayment = ({ userId }: { userId: string }) =>
+  withSupabaseHandler(supabase.from('Pay').select('*').eq('user_id', userId));
+
 // 결제 추가
 export const addPayment = ({ userId, movieId, title, imgUrl, price }: AddPaymentData) =>
   withSupabaseHandler(

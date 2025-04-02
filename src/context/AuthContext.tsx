@@ -6,6 +6,7 @@ import type {
   AuthTokenResponsePassword,
   Session,
   AuthResponse,
+  User,
 } from '@supabase/supabase-js';
 
 function fetchSession() {
@@ -21,6 +22,7 @@ type AuthContextType = {
   signIn: (credentials: SignInWithPasswordCredentials) => Promise<AuthTokenResponsePassword['data']>;
   signOut: () => Promise<void>;
   signUp: (credentials: SignInWithPasswordCredentials) => Promise<AuthResponse['data']>;
+  updateUser: (password: string) => Promise<{ user: User }>;
 };
 
 const sessionPromise = fetchSession();
@@ -40,6 +42,7 @@ function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // [TODO] api 파일 분리
   const signIn = async (credentials: SignInWithPasswordCredentials) => {
     const { data, error } = await supabase.auth.signInWithPassword(credentials);
 
@@ -58,7 +61,13 @@ function AuthProvider({ children }: { children: ReactNode }) {
     return data;
   };
 
-  const value = { session, signIn, signOut, signUp };
+  const updateUser = async (password: string) => {
+    const { data, error } = await supabase.auth.updateUser({ password });
+    if (error) throw error;
+    return data;
+  };
+
+  const value = { session, signIn, signOut, signUp, updateUser };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
