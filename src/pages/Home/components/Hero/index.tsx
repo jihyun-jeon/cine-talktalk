@@ -1,13 +1,13 @@
 import { usePopularMoviesQuery } from '@/hooks/query/useMovie';
 import { TMDB_LANGUAGE_KR } from '@/contants';
-import useNavigateToContents from '@/hooks/usePathParams';
+import { useNavigate } from 'react-router-dom';
 import { Movie } from '@/types/movieType';
 import Carousel from '@/components/Carousel';
 
 export const Hero = () => {
   const popularMovies = usePopularMoviesQuery({ language: TMDB_LANGUAGE_KR, page: 1 });
 
-  const { updatePathParam } = useNavigateToContents();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -19,7 +19,9 @@ export const Hero = () => {
             <div
               key={movie.id}
               className="relative  w-full  h-[400px] cursor-pointer"
-              onClick={() => updatePathParam('.', movie.id)}
+              onClick={() => {
+                navigate(`./${movie.id}`);
+              }}
             >
               <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent z-10"></div>
               <img

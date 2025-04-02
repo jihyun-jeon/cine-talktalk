@@ -1,13 +1,13 @@
 import { useTrendingMoviesQuery } from '@/hooks/query/useMovie';
 import PosterImage from '@/components/PosterImage';
 import { TMDB_LANGUAGE_KR } from '@/contants';
-import useNavigateToContents from '@/hooks/usePathParams';
+import { useNavigate } from 'react-router-dom';
 import { Movie } from '@/types/movieType';
 import Carousel from '@/components/Carousel';
 
 export const DayTop20 = () => {
   const trandingMovies = useTrendingMoviesQuery({ language: TMDB_LANGUAGE_KR, page: 1 });
-  const { updatePathParam } = useNavigateToContents();
+  const navigate = useNavigate();
 
   return (
     <>
@@ -16,7 +16,13 @@ export const DayTop20 = () => {
       ) : (
         <Carousel autoPlay={false} showIndicators={false} showArrows={true} itemsPerPage={5}>
           {trandingMovies.data?.results.map((movie: Movie) => (
-            <div key={movie.id} className="w-full px-2 cursor-pointer" onClick={() => updatePathParam('.', movie.id)}>
+            <div
+              key={movie.id}
+              className="w-full px-2 cursor-pointer"
+              onClick={() => {
+                navigate(`./${movie.id}`);
+              }}
+            >
               <div className="relative">
                 <PosterImage posterPath={movie?.poster_path} size="w342" />
               </div>

@@ -24,7 +24,7 @@ const Favorite = () => {
         {favorites.data?.map((favorite) => (
           <li key={favorite.id}>
             {favorite.title}
-            <div className="w-40" onClick={() => onFavoriteDelete(favorite.movie_id)}>
+            <div className="relative w-40" onClick={() => onFavoriteDelete(favorite.movie_id)}>
               <PosterImage posterPath={favorite.img_url} size={'w500'} />
             </div>
           </li>

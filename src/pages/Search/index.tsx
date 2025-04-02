@@ -3,16 +3,14 @@ import { useGenreSearchMoviesQuery, useKeywordSearchMoviesQuery } from '@/hooks/
 import { Movie } from '@/types/movieType';
 import { TMDB_LANGUAGE_KR } from '@/contants';
 import ToggleButtons from '@/pages/Search/components/ToggleButtons';
-import useUrlParams from '@/hooks/useUrlParams';
-import usePathParams from '@/hooks/usePathParams';
+import useQueryState from '@/hooks/routing/useQueryParams';
 import PosterImage from '@/components/PosterImage';
+import useNavigateTo from '@/hooks/routing/useUrlNavigation';
 
 const Search = () => {
-  const { useStringQueryState } = useUrlParams();
-  const [searchKeyword] = useStringQueryState('query');
-  const [genreParam, setGenreParam] = useStringQueryState('with_genres');
-
-  const { updatePathParam } = usePathParams();
+  const [searchKeyword] = useQueryState<string>('query');
+  const [genreParam, setGenreParam] = useQueryState<string>('with_genres');
+  const goTo = useNavigateTo();
 
   const initialGenres = genreParam ? genreParam.split(',') : [];
   const [selectedGenres, setSelectedGenres] = useState<string[]>(initialGenres);
@@ -68,11 +66,11 @@ const Search = () => {
           <li
             key={movie.id}
             onClick={() => {
-              updatePathParam('/movie', movie.id);
+              goTo('/movie/:movieId', { movieId: movie.id });
             }}
             className="w-full h-auto rounded-lg"
           >
-            <div className="w-full aspect-[3/4] rounded-lg">
+            <div className="relative w-full aspect-[3/4] rounded-lg">
               <PosterImage posterPath={movie?.poster_path} size="w500" />
             </div>
             {movie.title}

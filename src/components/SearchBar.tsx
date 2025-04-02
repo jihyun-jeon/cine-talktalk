@@ -1,14 +1,13 @@
 import { SetStateAction, useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
-import useUrlParams from '@/hooks/useUrlParams';
+import useQueryState from '@/hooks/routing/useQueryParams';
 
 const SearchBar = () => {
   const { pathname } = useLocation();
   const isSearchPage = pathname.includes('search');
 
-  const { useStringQueryState } = useUrlParams();
-  const [queryParam, setQueryParam] = useStringQueryState('query');
+  const [queryParam, setQueryParam] = useQueryState<string>('query');
 
   const [keyword, setKeyword] = useState(queryParam);
   const debouncedKeyword = useDebounce(keyword, 500);

@@ -2,7 +2,7 @@ import { TMDB_LANGUAGE_KR } from '@/contants';
 import { getImageUrl } from '@/utils/tmdbUtils';
 import { ToggleGroup, ToggleGroupItem } from '@radix-ui/react-toggle-group';
 import { useEffect, useState } from 'react';
-import usePathParams from '@/hooks/usePathParams';
+import usePathParams from '@/hooks/routing/usePathParams';
 import '@/styles/custom.css';
 import { useGetCreditQuery } from '@/hooks/query/useActor';
 import DetailHeader from '@/pages/Detail/components/DetailHeader';
@@ -14,8 +14,7 @@ import Similar from '@/pages/Detail/components/Similar';
 
 export default function Detail() {
   const [mode, setMode] = useState('info');
-  const { useNumberPathState } = usePathParams();
-  const [movieId, setPathParam] = useNumberPathState('movieId');
+  const [movieId, setPathParam] = usePathParams('movieId', 0);
 
   const credit = useGetCreditQuery(movieId, { language: TMDB_LANGUAGE_KR });
 
