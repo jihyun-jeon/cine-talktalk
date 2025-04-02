@@ -16,7 +16,7 @@ export const DayTop20 = () => {
       ) : (
         <Carousel autoPlay={false} showIndicators={false} showArrows={true} itemsPerPage={5}>
           {trandingMovies.data?.results.map((movie: Movie) => (
-            <div key={movie.id} className="w-1/5 px-2 cursor-pointer" onClick={() => updatePathParam('.', movie.id)}>
+            <div key={movie.id} className="w-full px-2 cursor-pointer" onClick={() => updatePathParam('.', movie.id)}>
               <div className="relative">
                 <PosterImage posterPath={movie?.poster_path} size="w342" />
               </div>

@@ -1,10 +1,8 @@
-import { useGetSimilarMovieQuery } from '@/hooks/query/useMovie';
 import { TMDB_LANGUAGE_KR } from '@/contants';
 import { getImageUrl } from '@/utils/tmdbUtils';
 import { ToggleGroup, ToggleGroupItem } from '@radix-ui/react-toggle-group';
 import { useEffect, useState } from 'react';
 import usePathParams from '@/hooks/usePathParams';
-import PosterImage from '@/components/PosterImage';
 import '@/styles/custom.css';
 import { useGetCreditQuery } from '@/hooks/query/useActor';
 import DetailHeader from '@/pages/Detail/components/DetailHeader';
@@ -12,6 +10,7 @@ import Comments from '@/pages/Detail/components/Comments';
 import clsx from 'clsx';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorPage from '@/pages/Error';
+import Similar from '@/pages/Detail/components/Similar';
 
 export default function Detail() {
   const [mode, setMode] = useState('info');
@@ -19,7 +18,6 @@ export default function Detail() {
   const [movieId, setPathParam] = useNumberPathState('movieId');
 
   const credit = useGetCreditQuery(movieId, { language: TMDB_LANGUAGE_KR });
-  const similar = useGetSimilarMovieQuery(movieId, { language: TMDB_LANGUAGE_KR });
 
   useEffect(() => {
     setMode('info');
@@ -86,25 +84,7 @@ export default function Detail() {
           )}
 
           {/* 관련 영화 */}
-          {mode === 'related' && (
-            <div className="mx-0 my-auto">
-              <h2 className="font-semibold">비슷한 콘텐츠</h2>
-              <div className=" flex flex-wrap justify-start gap-5">
-                {similar.data?.results.map((movie) => (
-                  <div
-                    key={movie.id}
-                    className="w-52  flex flex-col"
-                    onClick={() => {
-                      setPathParam(movie.id);
-                    }}
-                  >
-                    <PosterImage posterPath={movie.poster_path} size="w500" />
-                    <div className="ellipsis-base ellipsis-2"> {movie.title}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {mode === 'related' && <Similar movieId={movieId} setPathParam={setPathParam} />}
         </main>
       </ErrorBoundary>
     </>

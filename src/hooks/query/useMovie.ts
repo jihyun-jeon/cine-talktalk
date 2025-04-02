@@ -9,6 +9,7 @@ import {
   fetchMovieDetail,
 } from '@/api/movie';
 import { baseSearchParam, genreSearchParam, keywordSearchParam } from '@/types/movieType';
+import { useInfiniteQuery } from '@tanstack/react-query';
 
 /** 인기 영화 요청 */
 export const usePopularMoviesQuery = (queryParams: baseSearchParam) =>
@@ -49,10 +50,23 @@ export const useKeywordSearchMoviesQuery = (queryParams: keywordSearchParam, isF
     queryKey: MoviesQuery.getMany('searchMovie', queryParams),
   });
 
-/** 비슷한 영화 요청 */
+/** 비슷한 영화 요청 (무한 스크롤X)*/
 export const useGetSimilarMovieQuery = (movieId: number, queryParams: baseSearchParam) =>
   useQuery({
     queryFn: () => fetchSimilarMovies(movieId, queryParams),
+    queryKey: MoviesQuery.getMany('similarMovie', movieId),
+  });
+
+/** 비슷한 영화 요청 (무한 스크롤) */
+export const useGetSimilarMovieInfiniteQuery = (movieId: number, queryParams: baseSearchParam) =>
+  useInfiniteQuery({
+    queryFn: ({ pageParam = 1 }) => fetchSimilarMovies(movieId, { ...queryParams, page: pageParam }),
+    getNextPageParam: (lastPage) => {
+      if (!lastPage || !lastPage.total_pages) return undefined;
+      if (lastPage.page < lastPage.total_pages) return lastPage.page + 1;
+      return undefined;
+    },
+    initialPageParam: 1,
     queryKey: MoviesQuery.getMany('similarMovie', movieId),
   });
 

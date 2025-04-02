@@ -19,75 +19,82 @@ const Carousel: React.FC<CarouselProps> = ({
   itemsPerPage = 5,
   interval = 0,
 }) => {
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(itemsPerPage);
+  const isTransitioning = useRef(false);
 
   const childrenArray = React.Children.toArray(children);
   const totalItems = childrenArray.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+
+  const extendedItems = [
+    ...childrenArray.slice(-itemsPerPage), // 마지막 페이지의 아이템들
+    ...childrenArray,
+    ...childrenArray.slice(0, itemsPerPage), // 첫 페이지의 아이템들
+  ];
 
   const goToNext = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex((prevIndex) => (prevIndex + 1) % Math.ceil(totalItems / itemsPerPage));
+    if (!isTransitioning.current) {
+      isTransitioning.current = true;
+      setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
     }
   };
 
   const goToPrev = () => {
-    if (!isTransitioning) {
-      setIsTransitioning(true);
-      setCurrentIndex(
-        (prevIndex) => (prevIndex - 1 + Math.ceil(totalItems / itemsPerPage)) % Math.ceil(totalItems / itemsPerPage),
-      );
+    if (!isTransitioning.current) {
+      isTransitioning.current = true;
+      setCurrentIndex((prevIndex) => prevIndex - itemsPerPage);
     }
   };
 
-  const goToSlide = (index: number) => {
-    if (!isTransitioning && index !== currentIndex) {
-      setIsTransitioning(true);
-      setCurrentIndex(index);
+  const goToSlide = (pageIndex: number) => {
+    if (!isTransitioning.current && pageIndex !== currentIndex) {
+      isTransitioning.current = true;
+      setCurrentIndex(pageIndex * itemsPerPage);
     }
   };
 
   useEffect(() => {
-    // 애니메이션이 완료된 300ms 후에, 다음 전환이 가능하도록 처리
-    const transitionEndTimer = setTimeout(() => {
-      setIsTransitioning(false);
-    }, TRANSITION_DURATION);
+    if (isTransitioning.current) {
+      const timer = setTimeout(() => {
+        isTransitioning.current = false; // 애니메이션이 완료된 300ms 후에, 캐러셀 이동 허용
 
-    return () => clearTimeout(transitionEndTimer);
-  }, [currentIndex]);
+        if (currentIndex >= totalItems + itemsPerPage) {
+          setCurrentIndex(itemsPerPage); // 마지막 페이지에서 첫 번째 페이지로 자연스럽게 이동
+        } else if (currentIndex < itemsPerPage) {
+          setCurrentIndex(totalItems); // 첫 페이지에서 마지막 페이지로 자연스럽게 이동
+        }
+      }, TRANSITION_DURATION);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentIndex, totalItems, itemsPerPage]);
 
   const autoPlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (autoPlay) {
       autoPlayTimerRef.current = setInterval(goToNext, interval);
-    }
 
-    return () => {
-      if (autoPlayTimerRef.current) {
-        clearInterval(autoPlayTimerRef.current);
-      }
-    };
+      return () => {
+        if (autoPlayTimerRef.current) clearInterval(autoPlayTimerRef.current);
+      };
+    }
   }, [autoPlay, interval]);
 
-  const itemGroups = [];
-  for (let i = 0; i < totalItems; i += itemsPerPage) {
-    itemGroups.push(childrenArray.slice(i, i + itemsPerPage));
-  }
+  const getTransform = () => `translateX(-${currentIndex * (100 / itemsPerPage)}%)`;
 
   return (
     <div className="relative overflow-hidden">
       <div
         className="flex transition-transform ease-in-out"
         style={{
-          transform: `translateX(-${currentIndex * 100}%)`,
-          transitionDuration: `${TRANSITION_DURATION}ms`,
+          transform: getTransform(),
+          transition: isTransitioning.current ? `${TRANSITION_DURATION}ms` : 'none',
         }}
       >
-        {itemGroups.map((group, idx) => (
-          <div key={idx} className="w-full flex-shrink-0">
-            <div className="flex">{group}</div>
+        {extendedItems.map((item, idx) => (
+          <div key={idx} className="flex-shrink-0" style={{ width: `${100 / itemsPerPage}%` }}>
+            {item}
           </div>
         ))}
       </div>
@@ -135,14 +142,14 @@ const Carousel: React.FC<CarouselProps> = ({
         </>
       )}
 
-      {showIndicators && totalItems > 1 && (
+      {showIndicators && totalPages > 1 && (
         <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-          {Array.from({ length: Math.ceil(totalItems / itemsPerPage) }).map((_, index) => (
+          {Array.from({ length: totalPages }).map((_, index) => (
             <button
               key={index}
               onClick={() => goToSlide(index)}
               className={`w-3 h-3 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-white' : 'bg-white/50'
+                Math.floor((currentIndex - itemsPerPage) / itemsPerPage) === index ? 'bg-white' : 'bg-white/50'
               }`}
               aria-label={`슬라이드 ${index + 1}로 이동`}
             />
