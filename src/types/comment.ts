@@ -14,8 +14,8 @@ export interface Comment {
 
 /** 영화 리뷰 삭제 시 필요한 파라미터 */
 export type DeleteCommentParams = {
-  /** 영화 고유 ID */
-  movieId: number;
+  /** 댓글 고유 ID */
+  commentId: number;
   /** 사용자 ID */
   userId: string;
 };

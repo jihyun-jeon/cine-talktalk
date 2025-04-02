@@ -57,8 +57,8 @@ export default function Detail() {
           </div>
           {/* 출연진 */}
           {mode === 'info' && (
-            <>
-              <div className="py-5">
+            <div className="flex justify-between  gap-5">
+              <div className="py-5 w-2/3 border">
                 <h2 className="font-semibold">감독/출연진</h2>
 
                 <ul className="grid grid-cols-2 gap-4 mt-5">
@@ -75,11 +75,11 @@ export default function Detail() {
                   ))}
                 </ul>
               </div>
-              <div className="py-5">
+              <div className="py-5 w-1/3 ">
                 <h2 className="font-semibold">사용자 리뷰</h2>
                 <Comments movieId={movieId} />
               </div>
-            </>
+            </div>
           )}
 
           {/* 관련 영화 */}

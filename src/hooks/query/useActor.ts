@@ -6,15 +6,10 @@ import { fetchCredit } from '@/api/actor';
 export const useGetCreditQuery = (movieId: number, queryParams: baseSearchParam) =>
   useQuery({
     queryFn: () => fetchCredit(movieId, queryParams),
-    queryKey: ActorQueryKeys.getMany('credits', queryParams),
+    queryKey: ActorQueryKeys.getOne(movieId),
   });
 
 export const ActorQueryKeys = {
   all: ['actor'],
-  getMany: (getCategory: string, queryParams?: any) => [
-    ...ActorQueryKeys.all,
-    'getMany',
-    getCategory,
-    JSON.stringify(queryParams),
-  ],
+  getOne: (movieId: number) => [...ActorQueryKeys.all, 'getOne', movieId],
 };

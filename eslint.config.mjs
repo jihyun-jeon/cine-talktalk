@@ -30,6 +30,7 @@ export default [
     rules: {
       'no-unused-vars': 'warn',
       'no-undef': 'error',
+      'no-extra-boolean-cast': 'off',
       'no-relative-import-paths/no-relative-import-paths': [
         'warn',
         { allowSameFolder: false, prefix: '@', rootDir: 'src' },

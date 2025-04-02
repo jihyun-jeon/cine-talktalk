@@ -2,6 +2,7 @@ import { SetStateAction, useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import useDebounce from '@/hooks/useDebounce';
 import useQueryState from '@/hooks/routing/useQueryParams';
+import { useWhatChanged } from '@simbathesailor/use-what-changed';
 
 const SearchBar = () => {
   const { pathname } = useLocation();
@@ -17,8 +18,12 @@ const SearchBar = () => {
   };
 
   useEffect(() => {
-    setQueryParam(debouncedKeyword);
+    if (!!debouncedKeyword) {
+      setQueryParam(debouncedKeyword);
+    }
   }, [debouncedKeyword]);
+
+  useWhatChanged([queryParam, keyword]);
 
   return (
     <>

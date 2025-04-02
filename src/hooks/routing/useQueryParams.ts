@@ -12,7 +12,7 @@ const useQueryState = <T extends string | number | boolean>(key: string, default
   const paramValue = queryParams.get(key);
 
   if (!paramValue) {
-    currentValue = defaultValue as T;
+    currentValue = (defaultValue || '') as T;
   } else if (typeof paramValue === 'number') {
     currentValue = Number(paramValue) as T;
   } else if (typeof paramValue === 'boolean') {
@@ -24,10 +24,12 @@ const useQueryState = <T extends string | number | boolean>(key: string, default
   // 업데이트
   const updateSearchParams = (newParams: Record<string, string>) => {
     Object.entries(newParams).forEach(([key, value]) => {
-      if (value) {
-        queryParams.set(key, value);
-      } else {
+      const isEmptyValue = value === 'undefined' || value === 'null' || value === '';
+
+      if (isEmptyValue) {
         queryParams.delete(key);
+      } else {
+        queryParams.set(key, value);
       }
     });
   };
