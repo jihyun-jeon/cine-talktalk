@@ -33,41 +33,54 @@ const Carousel: React.FC<CarouselProps> = ({
   ];
 
   const goToNext = () => {
-    if (!isTransitioning.current) {
-      isTransitioning.current = true;
-      setCurrentIndex((prevIndex) => prevIndex + itemsPerPage);
-    }
+    if (isTransitioning.current) return;
+
+    isTransitioning.current = true;
+
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex + itemsPerPage;
+      handleCarousel(newIndex);
+      return newIndex;
+    });
   };
 
   const goToPrev = () => {
-    if (!isTransitioning.current) {
-      isTransitioning.current = true;
-      setCurrentIndex((prevIndex) => prevIndex - itemsPerPage);
-    }
+    if (isTransitioning.current) return;
+
+    isTransitioning.current = true;
+
+    setCurrentIndex((prevIndex) => {
+      const newIndex = prevIndex - itemsPerPage;
+      handleCarousel(newIndex);
+      return newIndex;
+    });
   };
 
   const goToSlide = (pageIndex: number) => {
-    if (!isTransitioning.current && pageIndex !== currentIndex) {
-      isTransitioning.current = true;
-      setCurrentIndex(pageIndex * itemsPerPage);
-    }
+    if (isTransitioning.current || pageIndex === currentIndex) return;
+
+    isTransitioning.current = true;
+
+    setCurrentIndex(() => {
+      const newIndex = pageIndex * itemsPerPage;
+      handleCarousel(newIndex);
+      return newIndex;
+    });
   };
 
-  useEffect(() => {
-    if (isTransitioning.current) {
-      const timer = setTimeout(() => {
-        isTransitioning.current = false; // 애니메이션이 완료된 300ms 후에, 캐러셀 이동 허용
+  const handleCarousel = (newIndex: number) => {
+    const timer = setTimeout(() => {
+      isTransitioning.current = false; // 애니메이션이 완료된 300ms 후에, 캐러셀 이동 허용
 
-        if (currentIndex >= totalItems + itemsPerPage) {
-          setCurrentIndex(itemsPerPage); // 마지막 페이지에서 첫 번째 페이지로 자연스럽게 이동
-        } else if (currentIndex < itemsPerPage) {
-          setCurrentIndex(totalItems); // 첫 페이지에서 마지막 페이지로 자연스럽게 이동
-        }
-      }, TRANSITION_DURATION);
+      if (newIndex >= totalItems + itemsPerPage) {
+        setCurrentIndex(itemsPerPage); // 마지막 페이지에서 첫 번째 페이지로 자연스럽게 이동
+      } else if (newIndex < itemsPerPage) {
+        setCurrentIndex(totalItems); // 첫 페이지에서 마지막 페이지로 자연스럽게 이동
+      }
+    }, TRANSITION_DURATION);
 
-      return () => clearTimeout(timer);
-    }
-  }, [currentIndex, totalItems, itemsPerPage]);
+    return () => clearTimeout(timer);
+  };
 
   const autoPlayTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
