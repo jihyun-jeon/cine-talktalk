@@ -1,7 +1,8 @@
 import { useGetSimilarMovieInfiniteQuery } from '@/hooks/query/useMovie';
 import { TMDB_LANGUAGE_KR } from '@/contants';
 import PosterImage from '@/components/PosterImage';
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect } from 'react';
+import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
 
 interface SimilarProps {
   movieId: number;
@@ -18,33 +19,17 @@ const Similar = ({ movieId, setPathParam }: SimilarProps) => {
     language: TMDB_LANGUAGE_KR,
   });
 
-  const observer = useRef<IntersectionObserver | null>(null);
-
-  const lastMovieRef = useCallback((node: HTMLDivElement | null) => {
-    if (observer.current) {
-      observer.current.disconnect();
-    }
-    if (node && observer.current) {
-      observer.current.observe(node);
-    }
-  }, []);
+  const [intersectRef, isIntersectingView] = useIntersectionObserver({
+    threshold: 0.1,
+    root: null,
+    rootMargin: '0px',
+  });
 
   useEffect(() => {
-    const currentObserver = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
-          fetchNextPage();
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.current = currentObserver;
-
-    return () => {
-      if (observer.current) observer.current.disconnect();
-    };
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+    if (isIntersectingView && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage();
+    }
+  }, [isIntersectingView]);
 
   return (
     <div className="mx-0 my-auto">
@@ -56,10 +41,10 @@ const Similar = ({ movieId, setPathParam }: SimilarProps) => {
               key={movie.id}
               ref={
                 pageIndex === similarData.pages.length - 1 && index === page.results.length - 1
-                  ? lastMovieRef
+                  ? intersectRef
                   : undefined
               }
-              className="relative w-52 flex flex-col cursor-pointer hover:opacity-80 transition-opacity"
+              className="relative w-52 aspect-[27/40] flex flex-col cursor-pointer hover:opacity-80 transition-opacity"
               onClick={() => setPathParam(movie.id)}
             >
               <PosterImage posterPath={movie.poster_path} size="w500" />
