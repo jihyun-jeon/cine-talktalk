@@ -38,5 +38,5 @@ export const useIntersectionObserver = ({
     if (node && observer.current) observer.current.observe(node); // 새로운 관찰 시작
   }, []);
 
-  return [lastMovieRef as any, isIntersectingView];
+  return [lastMovieRef, isIntersectingView] as const;
 };

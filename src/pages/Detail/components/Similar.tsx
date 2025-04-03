@@ -1,8 +1,7 @@
 import { useGetSimilarMovieInfiniteQuery } from '@/hooks/query/useMovie';
 import { TMDB_LANGUAGE_KR } from '@/contants';
 import PosterImage from '@/components/PosterImage';
-import { useEffect } from 'react';
-import { useIntersectionObserver } from '@/hooks/useIntersectionObserver';
+import InfiniteScroll from '@/components/InfiniteScroll';
 
 interface SimilarProps {
   movieId: number;
@@ -19,45 +18,39 @@ const Similar = ({ movieId, setPathParam }: SimilarProps) => {
     language: TMDB_LANGUAGE_KR,
   });
 
-  const [intersectRef, isIntersectingView] = useIntersectionObserver({
-    threshold: 0.1,
-    root: null,
-    rootMargin: '0px',
-  });
-
-  useEffect(() => {
-    if (isIntersectingView && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage();
-    }
-  }, [isIntersectingView]);
-
   return (
     <div className="mx-0 my-auto">
       <h2 className="font-semibold">비슷한 콘텐츠</h2>
-      <div className="flex flex-wrap justify-start gap-5">
-        {similarData?.pages.map((page, pageIndex) =>
-          page.results.map((movie, index) => (
-            <div
-              key={movie.id}
-              ref={
-                pageIndex === similarData.pages.length - 1 && index === page.results.length - 1
-                  ? intersectRef
-                  : undefined
-              }
-              className="relative w-52 aspect-[27/40] flex flex-col cursor-pointer hover:opacity-80 transition-opacity"
-              onClick={() => setPathParam(movie.id)}
-            >
-              <PosterImage posterPath={movie.poster_path} size="w500" />
-              <div className="ellipsis-base ellipsis-2">{movie.title}</div>
+      <InfiniteScroll hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage}>
+        {(intersectRef) => (
+          <>
+            <div className="flex flex-wrap justify-start gap-5">
+              {similarData?.pages.map((page, pageIndex) =>
+                page.results.map((movie, index) => (
+                  <div
+                    key={movie.id}
+                    ref={
+                      pageIndex === similarData.pages.length - 1 && index === page.results.length - 1
+                        ? intersectRef
+                        : undefined
+                    }
+                    className="relative w-52 aspect-[27/40] flex flex-col cursor-pointer hover:opacity-80 transition-opacity"
+                    onClick={() => setPathParam(movie.id)}
+                  >
+                    <PosterImage posterPath={movie.poster_path} size="w500" />
+                    <div className="ellipsis-base ellipsis-2">{movie.title}</div>
+                  </div>
+                )),
+              )}
             </div>
-          )),
+            {isFetchingNextPage && (
+              <div className="w-full text-center py-4">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-white border-r-transparent"></div>
+              </div>
+            )}
+          </>
         )}
-      </div>
-      {isFetchingNextPage && (
-        <div className="w-full text-center py-4">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-solid border-white border-r-transparent"></div>
-        </div>
-      )}
+      </InfiniteScroll>
     </div>
   );
 };
