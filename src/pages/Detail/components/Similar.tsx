@@ -21,7 +21,12 @@ const Similar = ({ movieId, setPathParam }: SimilarProps) => {
   return (
     <div className="mx-0 my-auto">
       <h2 className="font-semibold">비슷한 콘텐츠</h2>
-      <InfiniteScroll hasNextPage={hasNextPage} isFetchingNextPage={isFetchingNextPage} fetchNextPage={fetchNextPage}>
+      <InfiniteScroll
+        hasNextPage={hasNextPage}
+        isFetchingNextPage={isFetchingNextPage}
+        fetchNextPage={fetchNextPage}
+        threshold={0.1}
+      >
         {(intersectRef) => (
           <>
             <div className="flex flex-wrap justify-start gap-5">

@@ -6,11 +6,18 @@ interface InfiniteScrollProps {
   isFetchingNextPage: boolean;
   fetchNextPage: () => void;
   children: (intersectRef: (node: HTMLDivElement | null) => void) => React.ReactNode;
+  threshold?: number;
 }
 
-const InfiniteScroll = ({ hasNextPage, isFetchingNextPage, fetchNextPage, children }: InfiniteScrollProps) => {
+const InfiniteScroll = ({
+  hasNextPage,
+  isFetchingNextPage,
+  fetchNextPage,
+  children,
+  threshold = 0.1,
+}: InfiniteScrollProps) => {
   const [intersectRef, isIntersectingView] = useIntersectionObserver({
-    threshold: 0.1,
+    threshold,
   });
 
   useEffect(() => {
