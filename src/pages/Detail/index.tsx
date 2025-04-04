@@ -38,19 +38,19 @@ export default function Detail() {
               aria-label="Genre selection"
               className="flex flex-wrap gap-2"
             >
-              {CONTENTS_TAPS.map((data) => (
+              {CONTENTS_TAPS.map(({ name, value }) => (
                 <ToggleGroupItem
-                  value={data.value}
-                  key={data.value}
+                  value={value}
+                  key={value}
                   className={clsx(
                     'flex-none mr-1 py-2 px-4 rounded-lg transition-colors duration-200 border text-[#84868d]',
                     {
-                      'bg-white border-white': mode?.includes(data.value),
-                      'bg-black border-[#84868d]': !mode?.includes(data.value),
+                      'bg-white border-white': mode?.includes(value),
+                      'bg-black border-[#84868d]': !mode?.includes(value),
                     },
                   )}
                 >
-                  {data.name}
+                  {name}
                 </ToggleGroupItem>
               ))}
             </ToggleGroup>

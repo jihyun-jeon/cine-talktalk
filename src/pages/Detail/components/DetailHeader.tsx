@@ -78,18 +78,6 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
     return () => channel.close();
   }, [movieId, queryClient]);
 
-  const renderMovieInfo = () => (
-    <div className="flex align-center gap-1">
-      <p className="mb-1">✭ {movieInfo?.vote_average}</p>
-      <p className="px-2">•</p>
-      <p className="mb-1">{movieInfo?.release_date}</p>
-      <p className="px-2">•</p>
-      <p className="mb-1">{movieInfo?.genres.map((genre) => <span key={genre.id}>{genre.name} </span>)}</p>
-      <p className="px-2">•</p>
-      <p className="mb-1">{movieInfo?.runtime}m</p>
-    </div>
-  );
-
   const renderActionButtons = () => (
     <div className="flex gap-2">
       <button
@@ -152,7 +140,16 @@ const DetailHeader = ({ movieId }: { movieId: number }) => {
             )}
           </div>
 
-          {renderMovieInfo()}
+          <div className="flex align-center gap-1">
+            <p className="mb-1">✭ {movieInfo?.vote_average}</p>
+            <p className="px-2">•</p>
+            <p className="mb-1">{movieInfo?.release_date}</p>
+            <p className="px-2">•</p>
+            <p className="mb-1">{movieInfo?.genres.map((genre) => <span key={genre.id}>{genre.name} </span>)}</p>
+            <p className="px-2">•</p>
+            <p className="mb-1">{movieInfo?.runtime}m</p>
+          </div>
+
           <p>{movieInfo?.overview}</p>
 
           <div className="flex justify-between items-center">

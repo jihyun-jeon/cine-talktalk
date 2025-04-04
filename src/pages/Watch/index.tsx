@@ -5,6 +5,7 @@ import usePathParams from '@/hooks/routing/usePathParams';
 import useQueryState from '@/hooks/routing/useQueryParams';
 import useNavigateTo from '@/hooks/routing/useUrlNavigation';
 import clsx from 'clsx';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 const Watch = () => {
   const goTo = useNavigateTo();
@@ -18,12 +19,8 @@ const Watch = () => {
   const [showCheckIcon, setShowCheckIcon] = useState(false);
 
   const STORAGE_KEY = `bookmarks_${movieId}`;
-  const savedBookmarks = () => {
-    const savedBookmarks = localStorage.getItem(STORAGE_KEY);
-    return savedBookmarks ? JSON.parse(savedBookmarks) : [];
-  };
-
-  const [bookmarks, setBookmarks] = useState<number[]>(savedBookmarks);
+  const [storedBookMark, setStoredBookMark, removeStoredBookMark] = useLocalStorage<number[]>(STORAGE_KEY, []);
+  const [bookmarks, setBookmarks] = useState<number[]>(storedBookMark);
 
   const addBookmark = async () => {
     if (!playerRef.current) return;
@@ -45,9 +42,9 @@ const Watch = () => {
   useEffect(() => {
     // 북마크 저장
     if (!!bookmarks.length) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify([...bookmarks]));
+      setStoredBookMark(bookmarks);
     } else {
-      localStorage.removeItem(STORAGE_KEY);
+      removeStoredBookMark();
       setShowBookmarks(false);
     }
   }, [bookmarks]);
