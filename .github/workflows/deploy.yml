@@ -26,7 +26,7 @@ jobs:
 
       - name: Build project
         env:
-          REACT_APP_BASENAME: ${{ vars.REACT_APP_BASENAME }}
+          REACT_APP_BASENAME: ${{ vars.REACT_APP_BASENAME }}/
         run: pnpm build
 
       - name: Deploy to GitHub Pages
