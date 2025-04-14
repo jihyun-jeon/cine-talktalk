@@ -6,7 +6,7 @@
   "homepage": "https://jihyun-jeon.github.io/cine-talktalk/",
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack serve --config webpack.dev.js --open",
-    "build": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "build": "cross-env NODE_ENV=production REACT_APP_BASENAME=$REACT_APP_BASENAME webpack --config webpack.prod.js",
     "dev": "webpack serve --open",
     "test": "echo \"Error: no test specified\" && exit 1",
     "gen": "npx supabase gen types typescript --project-id lfyeulixkpstqwzrdnvf > src/lib/database.types.ts",
