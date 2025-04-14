@@ -94,5 +94,5 @@ export const router = createBrowserRouter(
 
     { path: '*', element: <NotFound /> },
   ],
-  { basename: '/cine-talktalk' },
+  { basename: process.env.REACT_APP_BASENAME },
 );

@@ -8,7 +8,7 @@ module.exports = merge(common, {
   mode: 'production', // 프로덕션 모드 설정
   devtool: 'hidden-source-map',
   output: {
-    publicPath: '/cine-talktalk/',
+    publicPath: process.env.REACT_APP_BASENAME + '/',
   },
   plugins: [...[new MiniCssExtractPlugin({ filename: '[name].[contenthash].css' })]].filter(Boolean),
   module: {
