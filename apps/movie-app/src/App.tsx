@@ -11,7 +11,7 @@ function App() {
     <AuthErrorBoundary>
       <Suspense fallback={<SpinnerPortal />}>
         <AuthContextProvider>
-          <Button appName="movie-app">Click me</Button>
+          <Button appName="movie-app">Click me!</Button>
           <RouterProvider router={router} />
         </AuthContextProvider>
       </Suspense>
