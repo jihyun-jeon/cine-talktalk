@@ -29,67 +29,70 @@ const RedirectIfAuthenticated = ({ children }: { children: React.ReactNode }) =>
   return session ? <Navigate to="/movie" replace /> : children;
 };
 
-export const router = createBrowserRouter([
-  {
-    path: '/',
-    element: (
-      <>
-        <CommonError />
-        <Layout />
-      </>
-    ),
-    children: [
-      { index: true, element: <Navigate to="/movie" replace /> },
-      { path: 'movie', element: <Home /> },
-      { path: 'movie/:movieId', element: <Detail /> },
-      { path: 'search', element: <Search /> },
-      { path: 'favorite', element: <Favorite /> },
-      { path: 'mypage', element: <MyPage /> },
-      {
-        path: 'watch/:movieId',
-        element: (
-          <RequireAuth>
-            <Watch />
-          </RequireAuth>
-        ),
-      },
-      {
-        path: 'login',
-        element: (
-          <RedirectIfAuthenticated>
-            <Login />
-          </RedirectIfAuthenticated>
-        ),
-      },
-      {
-        path: 'signup',
-        element: (
-          <RedirectIfAuthenticated>
-            <Signup />
-          </RedirectIfAuthenticated>
-        ),
-      },
-      { path: 'error', element: <ErrorPage /> },
-    ],
-  },
-  { path: 'update-profile', element: <UpdateProfile /> },
-  {
-    path: 'payment',
-    children: [
-      {
-        index: true,
-        element: <Navigate to="/payment/checkout" replace />,
-      },
-      {
-        path: 'checkout',
-        element: <CheckoutPage />,
-      },
-      {
-        path: 'success',
-        element: <SuccessPage />,
-      },
-    ],
-  },
+export const router = createBrowserRouter(
+  [
+    {
+      path: '/',
+      element: (
+        <>
+          <CommonError />
+          <Layout />
+        </>
+      ),
+      children: [
+        { index: true, element: <Navigate to="/movie" replace /> },
+        { path: 'movie', element: <Home /> },
+        { path: 'movie/:movieId', element: <Detail /> },
+        { path: 'search', element: <Search /> },
+        { path: 'favorite', element: <Favorite /> },
+        { path: 'mypage', element: <MyPage /> },
+        {
+          path: 'watch/:movieId',
+          element: (
+            <RequireAuth>
+              <Watch />
+            </RequireAuth>
+          ),
+        },
+        {
+          path: 'login',
+          element: (
+            <RedirectIfAuthenticated>
+              <Login />
+            </RedirectIfAuthenticated>
+          ),
+        },
+        {
+          path: 'signup',
+          element: (
+            <RedirectIfAuthenticated>
+              <Signup />
+            </RedirectIfAuthenticated>
+          ),
+        },
+        { path: 'error', element: <ErrorPage /> },
+      ],
+    },
+    { path: 'update-profile', element: <UpdateProfile /> },
+    {
+      path: 'payment',
+      children: [
+        {
+          index: true,
+          element: <Navigate to="/payment/checkout" replace />,
+        },
+        {
+          path: 'checkout',
+          element: <CheckoutPage />,
+        },
+        {
+          path: 'success',
+          element: <SuccessPage />,
+        },
+      ],
+    },
 
-  { path: '*', element: <NotFound /> },
-]);
+    { path: '*', element: <NotFound /> },
+  ],
+  { basename: process.env.REACT_APP_BASENAME },
+);
