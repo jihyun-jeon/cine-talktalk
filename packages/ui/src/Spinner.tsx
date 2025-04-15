@@ -1,4 +1,4 @@
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom";
 
 const Spinner = () => (
   <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-90  z-50">
@@ -6,6 +6,10 @@ const Spinner = () => (
   </div>
 );
 
-const SpinnerPortal = () => ReactDOM.createPortal(<Spinner />, document.getElementById('spinner-portal')!);
+const SpinnerPortal = () =>
+  ReactDOM.createPortal(
+    <Spinner />,
+    document.getElementById("spinner-portal")!
+  );
 
 export default SpinnerPortal;
